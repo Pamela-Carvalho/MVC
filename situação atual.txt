@@ -1,7 +1,0 @@
-O projeto atual tem uma projeção de reaproveitamento de código, mas não é exatamente o mvc
--ele utiliza o include 'arquivo.php' pra incluir a conexão com o banco de dados e o head comum entre as páginas.
-
--há uma página padrão de exibição do evento/notícia, que é preenchida atráves do parâmetro GET acionado ao selecionar um evento/notícia
-
--é possível mesclar páginas de exibição e busca, uma vez que a busca.php é a repetição da anterior + função buscar (se for possível começar o input com um valor padrão que possa ser alterado depois)
-

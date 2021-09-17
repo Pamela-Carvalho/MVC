@@ -1,0 +1,155 @@
+*MVC*
+_Model_ - parte encarregada por gerenciar regras de negócio, manipular dados, gerenciar as conexões com bancos de dados e está relacionado a obtenção ou persistencia de dados a aplicação;
+_View_ - é a parte externa do projeto, sendo aquilo que o usuário verá (HTML por exemplo);
+_Controller_ - responsável por fazer uma ponte entre os dados obtidos no Model e a exibição desses dados na View. Por meio dele as requisições são processadas e cada ação é executada dentro da Model, ou seja, uma ação de consulta, gravação, exclusão;
+-------------------------------------------
+Precisa de Composer instalado na máquina??
+
+O MVC é a divisão de partes do sistema
+-Dividir em pastas os arquivos responsáveis por cada parte (pastas: Controller, View e Model);
+-Começa pelos controladores por que ele é a ponte entre o view e o model;
+-Criar pasta 'Controller', com 'pages' dentro;
+----------------
+Método responsável por retornar o conteúdo (view) da página:
+Para a página 'home.php' (que está dentro de 'Pages' do controller:
+
+//namespace App\Controller\Pages;
+
+//chamar a classe view
+use \App\Utils\View;
+use \App\Model\Entity\Organization
+
+class Home extends Page{
+
+	//método responsável por retornar o conteúdo (view) da home
+
+	public static function getHome(){
+
+		//criar uma nova instância de organização
+		$obOrganization = new Organization; 
+
+		//VIEW DA HOME
+		$content = View::render('pages/home',[
+	'name' => $obOrganization->name,
+	'description' => $obOrganization->description,
+	'site' => $obOrganization->site
+]);
+		//RETORNA A VIEW DA PÁGINA
+		return parent::getPage('Pâmela Dev | Home', $content);
+		//return 'Olá mundo!';
+		//para retornar a página Home
+	}
+}
+
+----------------
+Criar pasta 'resourses' na raiz do projeto, não dentro de app;
+-Pasta responsável pelos arquivos front-end (html, css, js, imgs, etc);
+-Outra pasta adentro chamada 'View', com 'pages' dentro;
+Para a página 'home.html' (que está dentro de 'pages' da view):
+<h1>Home {{name}}</h1>
+Olá mundo :)
+<hr>
+{{description}}
+
+----------------
+Criar pasta 'Utils' dentro de app para as classes utilitárias do sistema - gerenciamento de acesso da view;
+Para a classe 'View.php' (que sestá dentro de 'utils' em app', e irá gerenciar as views:
+class View{
+
+	//método responsável por retornar o conteúdo de uma view (pega o arquivo do jeito que está)
+	private static function getContentView($view){
+		$file = __DIR__.'/../../resourses/view/'.$view.'html';
+		//se o arquivo existir ele o retorna, se não retorna vazio
+		return file_exists($file) ? file_get_contents($file) : '';
+}
+
+	//método responsável por retornar o conteúdo renderizado de uma view (passa variáveis pro arquivo, como nome de usuário)
+	public static function render($view, $vars = []){
+		//CONTEÚDO DA VIEW
+		$contentView = self::getContentView($view);
+
+		//debug para ver as variáveis chegando
+		/*/echo "<pre>";
+		//print_r($vars);
+		echo "</pre>"; exit;*/
+
+		//CHAVES DO ARRAY DE VARIÁVEIS
+		$keys = array_keys($vars);
+
+		$keys = array_map(funtion($item){
+		return '{{'.$item.'}}';
+}, $keys);
+
+		RETORNA CONTEÚDO RENDERIZADO
+		//return $contentView;
+		return str_replace($keys, array_values($vars), $contentView);
+
+	}	
+}
+
+----------------
+-Tornar mais dinâmico-
+Criar página 'page.html' em 'pages' da view
+-Adicionar estrutura básico html5 (header, body, footer) (exemplo pronto com bootstrap)
+--Passar variável {{header}}
+--Passar a variável {{content}} para o conteúdo da página;
+--Passar variável {{footer}}
+----------------
+Criar 'header.html' e 'footer.html' em 'pages' da view para compleatarem o layout de 'page.html'
+----------------
+NOVO CONTROLADOR - para page.html
+Para a página 'page.php' (que está dentro de 'Pages' do controller:
+
+//chamar a classe view
+use \App\Utils\View;
+
+class Page{
+
+	//método responsável por renderizar o topo/header da página
+
+	private static function getHeader(){
+		return View::render('pages/header');
+}
+
+	//método responsável por renderizar o redapé/footer da página
+
+	private static function getFooter(){
+		return View::render('pages/footer');
+}
+
+	//método responsável por retornar o conteúdo (view) da página genérica
+
+	public static function getPage($title, $content){
+		return View::render('pages/page',[
+	'title' => $title,
+	'header' => self::getHeader(),
+	'content' => $content,
+	'footer' => self::getFooter()
+	]);
+}
+}
+----------------
+Criar pasta 'Model' em 'App';
+-Será adicionado tudo aquilo responsável pelos dados e regras de negócio (entidades e afins);
+-Adicionar pasta 'Entity' (de 'entidade') em 'Model';
+-Adicionar em 'Entity' a classe 'Organization.php'
+
+Para a classe 'Organization.php':
+
+namespace App\Model\Entity
+
+class Organization{
+
+	//ID da organização
+	public $id = 1;
+
+	//nome da organização
+	public $name = 'Pâmela Web Developer';
+
+	//site da organização
+	public $site = 'https://Pamela-Carvalho.github.io/Projeto-AW1/Projeto/PB2/';
+
+	//descrição da organização
+	public $description = 'Lorem ipsum dolar sit amet.';
+
+}

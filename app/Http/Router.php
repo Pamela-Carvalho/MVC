@@ -37,7 +37,7 @@ class Router{
      * @param string $url
      */
     public function __construct($url){
-        $this->request  = new Request();
+        $this->request  = new Request($this);
         $this->url      = $url;
         $this->setPrefix();
     }
@@ -160,7 +160,7 @@ class Router{
                     // VARIÁVEIS PROCESSADAS
                     $keys = $methods[$httpMethod]['variables'];
                     $methods[$httpMethod]['variables'] = array_combine($keys, $matches);
-                    $methods[$httpMethod]['vairables']['request'] = $this->request;
+                    $methods[$httpMethod]['variables']['request'] = $this->request;
 
                     // ROTORNO DOS PARÂMETROS DA ROTA
                     return $methods[$httpMethod];
@@ -206,6 +206,14 @@ class Router{
         catch(Exception $e){
             return new Response($e->getCode(), $e->getMessage());
         }
+    }
+
+    /**
+     * Método responsável por retornar a URL atual
+     * @return string
+     */
+    public function getCurrentUrl(){
+        return $this->url.$this->getUri();
     }
 
 }

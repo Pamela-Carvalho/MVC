@@ -12,6 +12,7 @@ class Home extends Page{
      * @return string
      */
     public static function getHome(){
+        // ORGANIZAÇÃO
         $obOrganization = new Organization;
 
         // VIEW DA HOME
